@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es" id="htmlRoot" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Punto de Venta e Inventario VE Pro</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Librería Profesional Html5-Qrcode -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    
+    <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQm9kZWdhRXhwcmVzcyBWRVBubyIsInNob3J0X25hbWUiOiJCb2RlZ2FFeHByZXNzIiwic3RhcnRfdXJsIjoiLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMwZjE3MmEiLCJ0aGVtZV9jb2xvciI6IiMxMGI5ODEifQ==">
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%2233%22 fill=%22%23ffd700%22/><rect y=%2233%22 width=%22100%22 height=%2234%22 fill=%22%2300247d%22/><rect y=%2267%22 width=%22100%22 height=%2233%22 fill=%22%23cf142b%22/><text x=%2250%22 y=%2265%22 font-size=%2260%22 font-weight=%22bold%22 fill=%22white%22 text-anchor=%22middle%22 font-family=%22sans-serif%22>$</text></svg>">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
+
+        html[data-theme="light"] body { background-color: #f1f5f9; color: #0f172a; }
+        html[data-theme="light"] .app-card { background-color: #ffffff; border-color: #cbd5e1; color: #0f172a; }
+        html[data-theme="light"] .app-input { background-color: #f8fafc; border-color: #cbd5e1; color: #0f172a; }
+        html[data-theme="light"] .app-table-header { background-color: #e2e8f0; color: #334155; }
+        html[data-theme="light"] .app-table-row { border-color: #e2e8f0; color: #1e293b; background-color: #ffffff; }
+        html[data-theme="light"] .app-modal { background-color: #ffffff; border-color: #cbd5e1; color: #0f172a; }
+        html[data-theme="light"] .app-btn-secondary { background-color: #e2e8f0; color: #1e293b; border-color: #cbd5e1; }
+        html[data-theme="light"] .app-btn-secondary:hover { background-color: #cbd5e1; }
+        html[data-theme="light"] .app-hover-item:hover { background-color: #f1f5f9; }
+
+        html[data-theme="dark"] body { background-color: #030712; color: #f8fafc; }
+        html[data-theme="dark"] .app-card { background-color: #0f172a; border-color: #1e293b; color: #f8fafc; }
+        html[data-theme="dark"] .app-input { background-color: #1e293b; border-color: #334155; color: #f8fafc; }
+        html[data-theme="dark"] .app-table-header { background-color: #1e293b; color: #cbd5e1; }
+        html[data-theme="dark"] .app-table-row { border-color: #1e293b; color: #cbd5e1; background-color: #0f172a; }
+        html[data-theme="dark"] .app-modal { background-color: #0f172a; border-color: #1e293b; color: #f8fafc; }
+        html[data-theme="dark"] .app-btn-secondary { background-color: #1e293b; color: #cbd5e1; border-color: #334155; }
+        html[data-theme="dark"] .app-btn-secondary:hover { background-color: #334155; }
+        html[data-theme="dark"] .app-hover-item:hover { background-color: #1e293b; }
+        
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+        #reader { width: 100%; border: none !important; border-radius: 0.75rem; overflow: hidden; background-color: #000; display: flex; flex-direction: column; justify-content: center; align-items: center;}
+        #reader video { object-fit: cover !important; width: 100% !important; min-height: 100% !important;}
+        #reader__scan_region { background: transparent !important; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
+        #reader__dashboard { padding: 0 !important; background: transparent !important; border: none !important; display: none !important; }
+
+        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 15px rgba(16, 185, 129, 0.2); } 50% { box-shadow: 0 0 30px rgba(16, 185, 129, 0.6); } }
+        @keyframes pulse-glow-warn { 0%, 100% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.2); } 50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.6); } }
+        .glow-effect { animation: pulse-glow 3s infinite; }
+        .glow-effect-warn { animation: pulse-glow-warn 3s infinite; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col transition-colors duration-300 overflow-x-hidden" id="bodyRoot">
+
+    <!-- Toast de Notificación de Copiado Global -->
+    <div id="copyToast" class="fixed top-6 left-1/2 -translate-x-1/2 bg-emerald-500 text-black font-extrabold px-5 py-3 rounded-2xl shadow-2xl z-[10000] flex items-center space-x-2 transition-all duration-300 opacity-0 -translate-y-10 pointer-events-none">
+        <i class="fa-solid fa-circle-check text-xl"></i>
+        <span id="toastMsg" class="text-sm">¡Copiado con éxito!</span>
+    </div>
+
+    <!-- Input oculto para compatibilidad universal de copiado -->
+    <textarea id="hiddenCopyInput" class="fixed top-0 left-0 w-1 h-1 opacity-0 pointer-events-none" tabIndex="-1"></textarea>
+
+    <!-- ========================================== -->
+    <!-- PANTALLA DE ACTIVACIÓN INICIAL (BLOQUEO)   -->
+    <!-- ========================================== -->
+    <div id="activationScreen" class="fixed inset-0 z-[9999] bg-[#030712] flex items-center justify-center p-4 hidden">
+        <div class="relative w-full max-w-md">
+            <div class="absolute -top-20 -left-20 w-64 h-64 bg-emerald-600/20 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-sky-600/20 rounded-full blur-3xl"></div>
+            
+            <div class="bg-[#0f172a] border border-[#1e293b] rounded-3xl p-8 shadow-2xl relative z-10 glow-effect text-[#f8fafc]">
+                <div class="text-center mb-8">
+                    <div class="w-20 h-20 bg-emerald-600/10 rounded-2xl mx-auto flex items-center justify-center border border-emerald-500/30 mb-4 shadow-lg shadow-emerald-600/20">
+                        <i class="fa-solid fa-shield-halved text-4xl text-emerald-500"></i>
+                    </div>
+                    <h2 class="text-2xl font-extrabold mb-2">Activación Requerida</h2>
+                    <p class="text-sm text-slate-400">Ingrese su código de licencia para desbloquear el sistema POS PRO.</p>
+                </div>
+
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Nombre del Negocio / Registro</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i class="fa-solid fa-store text-slate-500"></i></div>
+                            <input type="text" id="actClientName" placeholder="Ej. Inversiones JM" class="w-full pl-10 p-3.5 rounded-xl bg-[#1e293b] border border-[#334155] text-white focus:border-emerald-500 focus:outline-none transition">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Código de Activación</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i class="fa-solid fa-key text-slate-500"></i></div>
+                            <input type="password" id="actCode" placeholder="XXXX-XXXX-XXXX" class="w-full pl-10 p-3.5 rounded-xl bg-[#1e293b] border border-[#334155] text-white focus:border-emerald-500 focus:outline-none transition font-mono tracking-widest uppercase">
+                            <button onclick="togglePasswordVisibility('actCode')" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-white"><i class="fa-regular fa-eye"></i></button>
+                        </div>
+                    </div>
+                    
+                    <button onclick="processActivation()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-emerald-600/30 transition text-sm uppercase tracking-wider mt-2">
+                        Verificar y Activar
+                    </button>
+                </div>
+                <div class="mt-6 text-center text-xs text-slate-500">BodegaExpress VE Pro &copy; 2026.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PANTALLA DE COBRO MENSUAL (SUSCRIPCIÓN)    -->
+    <!-- ========================================== -->
+    <div id="monthlyBillingScreen" class="fixed inset-0 z-[9998] bg-[#030712]/95 backdrop-blur-xl flex items-center justify-center p-4 hidden">
+        <div class="relative w-full max-w-md">
+            <div class="absolute -top-10 -left-10 w-40 h-40 bg-amber-500/20 rounded-full blur-3xl"></div>
+            
+            <div class="bg-[#0f172a] border border-amber-500/30 rounded-3xl p-6 md:p-8 shadow-2xl relative z-10 glow-effect-warn text-[#f8fafc]">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-amber-500/10 rounded-2xl mx-auto flex items-center justify-center border border-amber-500/30 mb-4 shadow-lg shadow-amber-500/20">
+                        <i class="fa-solid fa-calendar-check text-3xl text-amber-500"></i>
+                    </div>
+                    <h2 class="text-xl font-extrabold mb-1">Renovación de Licencia</h2>
+                    <p class="text-xs text-slate-400">Tu tiempo de suscripción ha culminado. Renueva para seguir usando el sistema.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center bg-[#1e293b] border border-emerald-500/30 p-4 rounded-xl">
+                        <div>
+                           <div class="text-[10px] text-emerald-500 font-bold uppercase tracking-wider mb-1">Monto a pagar</div>
+                           <div class="text-2xl font-extrabold text-white">$2.99 <span class="text-xs font-normal text-slate-400">/ mes</span></div>
+                           <div class="text-sm font-semibold text-emerald-400 mt-1">Bs. <span id="billingAmountBs">...</span> <span class="text-[10px] text-slate-400 font-normal">(Tasa BCV)</span></div>
+                        </div>
+                        <button onclick="copyBillingAmount(this)" class="h-12 w-12 bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/50 text-emerald-400 rounded-xl flex items-center justify-center transition cursor-pointer" title="Copiar Monto en Bs">
+                            <i class="fa-regular fa-copy text-lg pointer-events-none"></i>
+                        </button>
+                    </div>
+
+                    <div class="bg-[#1e293b] p-4 rounded-xl border border-[#334155] relative text-sm">
+                        <button onclick="copyPagoMovilData(this)" class="absolute top-3 right-3 text-sky-400 hover:text-sky-300 transition flex items-center space-x-1 bg-sky-400/10 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer" title="Copiar todo">
+                            <i class="fa-regular fa-copy pointer-events-none"></i> <span class="pointer-events-none">Copiar Datos</span>
+                        </button>
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Datos de Pago Móvil</h4>
+                        <div class="space-y-1.5 text-[13px]">
+                            <div class="flex justify-between"><span class="text-slate-400">Banco:</span> <span class="font-bold">BNC</span></div>
+                            <div class="flex justify-between"><span class="text-slate-400">Cédula:</span> <span class="font-bold">21271099</span></div>
+                            <div class="flex justify-between"><span class="text-slate-400">Teléfono:</span> <span class="font-bold">0416-9485195</span></div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="confirmPaymentAndUnlock()" class="w-full bg-[#25D366] hover:bg-[#1ebe57] text-white font-bold py-4 rounded-xl shadow-lg shadow-[#25D366]/30 transition text-sm uppercase tracking-wider flex items-center justify-center space-x-2 mt-2 cursor-pointer">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                        <span>Enviar Comprobante</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Admin Auth (Para entrar al panel secreto) -->
+    <div id="adminAuthModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md hidden p-4">
+        <div class="app-modal border rounded-2xl p-6 max-w-sm w-full mx-auto shadow-2xl">
+            <div class="text-center mb-4">
+                <i class="fa-solid fa-user-shield text-3xl text-rose-500 mb-2"></i>
+                <h3 class="text-lg font-bold">Acceso Administrativo</h3>
+                <p class="text-xs text-slate-400">Ingrese la Llave Maestra</p>
+            </div>
+            <input type="password" id="adminMasterKeyInput" placeholder="Llave Maestra" class="w-full p-3 rounded-xl app-input border text-center font-mono tracking-wider mb-4 focus:outline-none focus:border-rose-500">
+            <div class="flex justify-end space-x-3">
+                <button onclick="document.getElementById('adminAuthModal').classList.add('hidden')" class="px-4 py-2 text-sm font-semibold rounded-xl transition app-btn-secondary">Cancelar</button>
+                <button onclick="verifyAdminAccess()" class="px-5 py-2 text-sm font-semibold text-white bg-rose-600 hover:bg-rose-500 rounded-xl transition shadow-lg shadow-rose-600/20">Acceder</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Global de Alertas y Confirmaciones -->
+    <div id="customModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
+        <div class="app-modal border rounded-2xl p-6 max-w-sm w-full mx-auto shadow-2xl">
+            <div id="modalIcon" class="w-12 h-12 rounded-full flex items-center justify-center mb-4 text-xl"></div>
+            <h3 id="modalTitle" class="text-lg font-bold mb-2"></h3>
+            <p id="modalMessage" class="text-sm text-slate-500 dark:text-slate-400 mb-6"></p>
+            <div class="flex justify-end space-x-3">
+                <button id="modalCancelBtn" onclick="closeModal(false)" class="hidden px-4 py-2 text-sm font-semibold rounded-xl transition app-btn-secondary">Cancelar</button>
+                <button id="modalConfirmBtn" onclick="closeModal(true)" class="px-5 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl transition shadow-lg shadow-emerald-600/20">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Factura Compartible -->
+    <div id="invoiceModal" class="fixed inset-0 z-[95] flex items-center justify-center bg-black/90 backdrop-blur-md hidden p-4">
+        <div class="app-modal border rounded-2xl p-6 max-w-md w-full mx-auto shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="text-center pb-3 border-b border-slate-200 dark:border-slate-800">
+                <h3 id="invStoreName" class="font-extrabold text-lg text-emerald-600 dark:text-emerald-400">BodegaExpress VE</h3>
+                <p id="invStoreRif" class="text-xs text-slate-500 dark:text-slate-400">RIF: J-50123456-8</p>
+                <p id="invStoreAddress" class="text-xs text-slate-500 dark:text-slate-400">Caracas, Venezuela</p>
+            </div>
+            <div class="space-y-1 text-xs text-slate-500 dark:text-slate-400">
+                <div class="flex justify-between"><span id="invNumber">Factura: V-1001</span> <span id="invDate">12/08/2026 12:00</span></div>
+                <div class="flex justify-between"><span id="invClient">Cliente: General</span> <span id="invRateType">Tasa: BCV</span></div>
+            </div>
+            <div class="border-t border-b border-slate-200 dark:border-slate-800 py-2">
+                <table class="w-full text-xs">
+                    <thead>
+                        <tr class="text-left text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
+                            <th class="pb-1">Cant/Peso</th>
+                            <th class="pb-1">Producto</th>
+                            <th class="pb-1 text-right">Total ($)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invItemsList" class="divide-y divide-slate-200 dark:divide-slate-800/60"></tbody>
+                </table>
+            </div>
+            <div class="space-y-1 text-xs pt-1">
+                <div class="flex justify-between font-bold text-sm pt-1"><span>Total USD:</span> <span id="invTotalUsd">$0.00</span></div>
+                <div class="flex justify-between font-extrabold text-base text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 p-2 rounded-xl border border-emerald-200 dark:border-emerald-800/40"><span>Total VES:</span> <span id="invTotalBs">Bs. 0.00</span></div>
+            </div>
+            <div class="flex space-x-2 pt-2">
+                <button onclick="shareInvoice()" class="w-1/2 bg-sky-600 hover:bg-sky-500 text-white font-bold py-2.5 rounded-xl text-xs transition flex items-center justify-center space-x-1"><i class="fa-solid fa-share-nodes"></i> <span>Compartir / Imprimir</span></button>
+                <button onclick="closeInvoiceModal()" class="w-1/2 app-btn-secondary font-bold py-2.5 rounded-xl text-xs transition">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Escáner Profesional Web -->
+    <div id="scannerModal" class="fixed inset-0 z-[90] flex items-center justify-center bg-black/95 backdrop-blur-md hidden p-2 sm:p-4">
+        <div class="app-modal border rounded-2xl p-4 max-w-lg w-full mx-auto shadow-2xl relative flex flex-col h-[85vh] sm:h-[80vh] space-y-4">
+            <div class="flex justify-between items-center shrink-0">
+                <div class="flex items-center space-x-2">
+                    <h3 class="text-lg font-bold flex items-center">
+                        <i class="fa-solid fa-barcode mr-2 text-emerald-500"></i> Escáner Pro
+                    </h3>
+                    <select id="cameraSelect" onchange="changeCameraDevice()" class="app-input text-xs font-bold px-2 py-1.5 rounded-lg border focus:outline-none max-w-[150px] truncate">
+                        <option value="">Cargando cámaras...</option>
+                    </select>
+                </div>
+                <button onclick="stopScanner()" class="text-slate-400 hover:text-slate-200 text-2xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="relative bg-black rounded-xl overflow-hidden flex-1 flex items-center justify-center w-full shadow-inner border border-slate-800">
+                <div id="reader" class="w-full h-full"></div>
+                <div id="scannerStatusBadge" class="absolute top-4 left-4 bg-black/70 text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-lg backdrop-blur-sm z-10 shadow-lg shadow-black/50">Iniciando óptica...</div>
+            </div>
+            <div class="flex items-center justify-between shrink-0 pt-2">
+                <button id="torchBtn" onclick="toggleTorch()" class="bg-amber-600/20 text-amber-500 hover:bg-amber-600/30 px-5 py-3 rounded-xl text
